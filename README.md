@@ -38,4 +38,4 @@
 
 # 🔗 Связанные проекты
 
-[Frontend часть приложения](https://github.com/NyashStorage/coderock-frontend)
+[Frontend часть приложения](https://github.com/NyashStorage/coderock-2024-frontend)
