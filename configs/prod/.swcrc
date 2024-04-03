@@ -18,7 +18,7 @@
     "preserveAllComments": false
   },
   "module": {
-    "type": "es6"
+    "type": "nodenext"
   },
   "minify": true,
   "exclude": ["node_modules", "dist"]

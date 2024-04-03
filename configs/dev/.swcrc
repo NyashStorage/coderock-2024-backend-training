@@ -12,7 +12,7 @@
     "preserveAllComments": true
   },
   "module": {
-    "type": "es6"
+    "type": "nodenext"
   },
   "sourceMaps": true,
   "exclude": ["node_modules", "dist"]
