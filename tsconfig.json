@@ -1,21 +1,29 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
+    "module": "ES6",
     "target": "ES2022",
+    "lib": ["ES2022"],
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "noImplicitAny": false,
-    "forceConsistentCasingInFileNames": true,
+
+    /* Настройки сборщика */
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+    /* Настройки линтинга */
+    "strict": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "forceConsistentCasingInFileNames": true,
   },
   "exclude": ["node_modules", "dist"]
 }

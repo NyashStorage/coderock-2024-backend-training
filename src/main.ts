@@ -40,7 +40,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
     await app.listen(port, '0.0.0.0');
 
     logger.log(`HTTP server is running on port ${port}.`);
-  } catch (exception) {
+  } catch (exception: any) {
     logger.error(
       `Something went wrong when starting application: ${exception.message}.`,
     );
