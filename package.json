@@ -7,12 +7,6 @@
     "email": "contact@nyashmyash99.ru",
     "url": "https://nyashmyash99.ru"
   },
-  "contributors": [
-    {
-      "name": "Evgeniy Goryunov",
-      "url": "https://vk.com/id731945165"
-    }
-  ],
   "license": "https://files.foxinbox.su/license/LICENSE",
   "engines": {
     "node": ">=18.0.0 <19.0.0"
