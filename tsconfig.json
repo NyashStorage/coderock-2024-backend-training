@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "ES6",
+    "module": "ES2022",
     "target": "ES2022",
     "lib": ["ES2022"],
     "outDir": "./dist",
@@ -21,6 +21,7 @@
     /* Настройки линтинга */
     "strict": true,
     "noImplicitAny": false,
+    "strictPropertyInitialization": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,

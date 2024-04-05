@@ -26,12 +26,14 @@
     "with-options": "cross-env NODE_OPTIONS=--experimental-specifier-resolution=node"
   },
   "dependencies": {
-    "@fastify/static": "^7.0.1",
-    "@nestjs/common": "^10.3.3",
-    "@nestjs/config": "^3.2.0",
-    "@nestjs/core": "^10.3.3",
-    "@nestjs/platform-fastify": "^10.3.3",
-    "@nestjs/swagger": "^7.3.0",
+    "@fastify/cookie": "^9.3.1",
+    "@fastify/static": "^7.0.3",
+    "@nestjs/common": "^10.3.7",
+    "@nestjs/config": "^3.2.1",
+    "@nestjs/core": "^10.3.7",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/platform-fastify": "^10.3.7",
+    "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
     "automapper-classes": "^8.7.12",
     "automapper-nestjs": "^8.7.12",
@@ -39,7 +41,9 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.5",
     "dotenv-expand": "^11.0.6",
-    "pg": "^8.11.3",
+    "fastify": "^4.26.2",
+    "md5": "^2.3.0",
+    "pg": "^8.11.5",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20"
@@ -47,11 +51,12 @@
   "devDependencies": {
     "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.1.1",
-    "@swc/cli": "^0.3.10",
+    "@swc/cli": "^0.3.12",
     "@swc/core": "^1.4.8",
+    "@types/md5": "^2.3.5",
     "@types/node": "^18.19.18",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
+    "@typescript-eslint/eslint-plugin": "^7.5.0",
+    "@typescript-eslint/parser": "^7.5.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -60,6 +65,6 @@
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.4"
   }
 }

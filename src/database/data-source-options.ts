@@ -1,7 +1,8 @@
 import type { DataSourceOptions } from 'typeorm';
 import * as process from 'process';
 import configuration from '../config/configuration';
-import { isDevelopmentMode } from '../app/helpers/development.helpers';
+import UserEntity from '../users/entities/user.entity';
+import { AddUserEntity1712270424185 } from './migrations/1712270424185-AddUserEntity';
 
 // Подгружаем данные из файла .env в process.env.
 configuration();
@@ -9,9 +10,8 @@ configuration();
 const options: DataSourceOptions = {
   type: 'postgres',
   url: process.env.POSTGRES_URL,
-  logging: isDevelopmentMode() ? ['query'] : ['error'],
-  entities: [],
-  migrations: [],
+  entities: [UserEntity],
+  migrations: [AddUserEntity1712270424185],
 };
 
 export default options;

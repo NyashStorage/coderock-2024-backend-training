@@ -3,8 +3,9 @@ import AppModule from './app/app.module';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { fastifyCookie } from '@fastify/cookie';
 
 (async (): Promise<any> => {
   const logger = new Logger('Main');
@@ -20,6 +21,25 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
     // Настраиваем приложение.
     app.setGlobalPrefix('api/v1');
+
+    await app.register(fastifyCookie, {
+      secret: configService.get('cookie_secret'),
+    });
+
+    app.enableCors({
+      origin: '*',
+      credentials: true,
+      exposedHeaders: 'X-Access-Token',
+    });
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        // Преобразовывает plain object в типизированный объект.
+        transform: true,
+        // Не засчитывает поля запроса, у которых нет декоратора проверки.
+        whitelist: true,
+      }),
+    );
 
     // Подключаем документацию.
     SwaggerModule.setup(
@@ -39,10 +59,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
     const port = configService.get('API_PORT') || 3000;
     await app.listen(port, '0.0.0.0');
 
-    logger.log(`HTTP server is running on port ${port}.`);
+    logger.log(`HTTP сервер запущен на порту ${port}.`);
   } catch (exception: any) {
     logger.error(
-      `Something went wrong when starting application: ${exception.message}.`,
+      `Что-то пошло не так при запуске приложения: ${exception.stack}.`,
     );
   }
 })();
