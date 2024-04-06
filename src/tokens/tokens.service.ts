@@ -3,6 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import type JwtPayload from './dto/jwt-payload.dto';
 import type { TokensResponse } from './dto/responses/token.response';
 import type { FastifyReply } from 'fastify';
+import { fastifyCookie } from '@fastify/cookie';
+import { ServerResponse } from 'http';
+import { setHeader } from '../helpers/response.helpers';
 
 @Injectable()
 export default class TokensService {
@@ -65,20 +68,31 @@ export default class TokensService {
    */
   public prepareTokenCookie(
     refreshToken: string,
-    response: FastifyReply,
+    response: FastifyReply | ServerResponse,
   ): void {
-    response.setCookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/',
-    });
+    setHeader(
+      response,
+      'set-cookie',
+      fastifyCookie.serialize('refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: '/',
+      }),
+    );
   }
 
   /**
    * Очищает токен обновления в куки.
    */
-  public invalidateTokenCookie(response: FastifyReply): void {
-    response.clearCookie('refresh_token');
+  public invalidateTokenCookie(response: FastifyReply | ServerResponse): void {
+    setHeader(
+      response,
+      'set-cookie',
+      fastifyCookie.serialize('refresh_token', '', {
+        expires: new Date(0),
+        path: '/',
+      }),
+    );
   }
 }

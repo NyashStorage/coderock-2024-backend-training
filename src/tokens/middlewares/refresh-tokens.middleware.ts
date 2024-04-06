@@ -4,6 +4,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import TokensService from '../tokens.service';
 import TokenGuard from '../../auth/guards/token.guard';
 import type { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
+import { fastifyCookie } from '@fastify/cookie';
+import { ServerResponse } from 'http';
+import { setHeader } from '../../helpers/response.helpers';
 
 /**
  * Автоматически обновляет токен доступа без прерывания запроса, если это возможно.
@@ -17,31 +20,30 @@ export class RefreshTokensMiddleware implements NestMiddleware {
 
   async use(
     request: FastifyRequest,
-    response: FastifyReply,
+    response: FastifyReply | ServerResponse,
     next: () => any,
   ): Promise<void> {
-    const authHeader = request.headers.authorization;
-    if (!authHeader?.startsWith('Bearer ')) return next();
+    if (!request.headers.cookie) return next();
 
-    // Если токен проходит защиту авторизации - пропускаем его дальше.
+    const cookies = fastifyCookie.parse(request.headers.cookie);
+    // Если нет токена обновления - авторизации точно не было.
+    if (!cookies?.['refresh_token']) return next();
+
+    // Если токен доступа проходит защиту авторизации - пропускаем запрос дальше.
     try {
-      await this.tokenGuard.canActivate(
-        this.mockContext(request, response, next),
-      );
+      await this.tokenGuard.canActivate(this.mockContext(request, next));
 
       return next();
     } catch (_) {}
 
     // Обновляем токены по токену обновления из куки.
-    const refreshToken = request.cookies?.['refresh_token'] || null;
+    const refreshToken = cookies['refresh_token'];
     const updatedTokens = this.tokensService.refreshTokens(refreshToken);
 
     // Устанавливаем новый токен доступа в текущий запрос
     // и прогоняем через защиту авторизации, чтобы установить user.
     request.headers.authorization = `Bearer ${updatedTokens.access_token}`;
-    await this.tokenGuard.canActivate(
-      this.mockContext(request, response, next),
-    );
+    await this.tokenGuard.canActivate(this.mockContext(request, next));
 
     // Отправляем новые токены пользователю.
     this.tokensService.prepareTokenCookie(
@@ -49,20 +51,19 @@ export class RefreshTokensMiddleware implements NestMiddleware {
       response,
     );
 
-    response.header('X-Access-Token', updatedTokens.access_token);
+    setHeader(response, 'X-Access-Token', updatedTokens.access_token);
     next();
   }
 
   private mockContext(
     request: FastifyRequest,
-    response: FastifyReply,
     next: () => any,
   ): ExecutionContextHost {
     return {
       getType: () => 'http',
       switchToHttp: () => ({
         getRequest: () => request,
-        getResponse: () => response,
+        getResponse: () => null,
         getNext: () => next,
       }),
     } as ExecutionContextHost;

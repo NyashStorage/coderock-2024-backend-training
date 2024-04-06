@@ -5,7 +5,7 @@ import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { fastifyCookie } from '@fastify/cookie';
+import type { ServerResponse } from 'http';
 
 (async (): Promise<any> => {
   const logger = new Logger('Main');
@@ -19,18 +19,27 @@ import { fastifyCookie } from '@fastify/cookie';
 
     const configService = app.get(ConfigService);
 
-    // Настраиваем приложение.
-    app.setGlobalPrefix('api/v1');
+    // Настраиваем CORS.
+    // По какой-то причине Redux Toolkit Query не видит enableCord, поэтому делаем так.
+    app.use((_, response: ServerResponse, next: () => void) => {
+      response.setHeader('access-control-allow-credentials', 'true');
+      response.setHeader('access-control-expose-headers', ['X-Access-Token']);
+      response.setHeader(
+        'access-control-allow-origin',
+        configService.get('CORS_ALLOWED_CLIENT_URLS')?.split(',') || '*',
+      );
 
-    await app.register(fastifyCookie, {
-      secret: configService.get('cookie_secret'),
+      next();
     });
 
     app.enableCors({
-      origin: '*',
+      origin: configService.get('CORS_ALLOWED_CLIENT_URLS')?.split(',') || '*',
       credentials: true,
-      exposedHeaders: 'X-Access-Token',
+      exposedHeaders: ['X-Access-Token'],
     });
+
+    // Настраиваем приложение.
+    app.setGlobalPrefix('api/v1');
 
     app.useGlobalPipes(
       new ValidationPipe({
